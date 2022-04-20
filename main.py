@@ -105,7 +105,7 @@ class Image_Processing:
                 roi_search, lang=lang, config=config_psm
             )
             text += f"***ROI n°{roi[1]}***\n"
-            text += text_py
+            text += text_py + "\n"
         return text
 
     def save_text_to_file(self, text: str) -> None:

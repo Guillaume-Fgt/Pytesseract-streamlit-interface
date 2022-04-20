@@ -4,7 +4,7 @@ from main import Image_Processing
 
 def main():
 
-    # st.set_page_config(layout="wide")
+    st.set_page_config(layout="wide")
     st.header("PyTesseract Image Processing")
     st.subheader("Optical character recognition (OCR)")
     uploaded_file = st.sidebar.file_uploader("Choose a file")
@@ -106,8 +106,8 @@ def main():
                 st.write("No contour detected")
                 text = ""
 
-        col11, col12 = st.columns(2)
-        with col12:
+        col11, col12, col13 = st.columns(3)
+        with col13:
             st.subheader("PyTesseract settings")
             psm = st.radio(
                 "Page segmentation modes",
@@ -136,6 +136,7 @@ def main():
                 if st.button("Save text to file"):
                     image.save_text_to_file(text)
                 st.text(text)
+        with col12:
             with st.expander("Show individual ROI"):
                 if st.button("Save individual ROI"):
                     image.save_image_to_file(rois)
