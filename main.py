@@ -79,7 +79,7 @@ class Image_Processing:
                 num = cv2.putText(
                     self.img,
                     str(rect_num),
-                    org=(x, y + h),
+                    org=(x + 10, y + h - 10),
                     fontFace=cv2.FONT_HERSHEY_DUPLEX,
                     fontScale=2,
                     color=(36, 255, 12),

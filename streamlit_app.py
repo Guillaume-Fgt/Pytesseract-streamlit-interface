@@ -1,13 +1,14 @@
 import streamlit as st
 from main import Image_Processing
+import config
 
 
 def main():
-
-    st.set_page_config(layout="wide")
+    """define the steamlit UI"""
+    # st.set_page_config(layout="wide")
     st.header("PyTesseract Image Processing")
     st.subheader("Optical character recognition (OCR)")
-    uploaded_file = st.sidebar.file_uploader("Choose a file")
+    uploaded_file = st.sidebar.file_uploader("Choose an image file")
 
     if uploaded_file:
         st.sidebar.subheader("Original image")
@@ -29,21 +30,12 @@ def main():
             st.subheader("Mask settings")
             choice_struct = st.radio(
                 "Structuring element",
-                ("MORPH_RECT", "MORPH_CROSS", "MORPH_ELLIPSE"),
+                config.structuring_element,
                 index=2,
             )
             choice_morph = st.radio(
                 "Morphological operation",
-                (
-                    "MORPH_ERODE",
-                    "MORPH_DILATE",
-                    "MORPH_OPEN",
-                    "MORPH_CLOSE",
-                    "MORPH_GRADIENT",
-                    "MORPH_TOPHAT",
-                    "MORPH_BLACKHAT",
-                    "MORPH_HITMISS",
-                ),
+                config.morphological_operation,
                 index=3,
             )
         with col3:
@@ -56,17 +48,11 @@ def main():
             st.subheader("Adaptive Threshold settings")
             choice_adapt_thresh = st.radio(
                 "Adaptive Method",
-                (
-                    "ADAPTIVE_THRESH_MEAN_C",
-                    "ADAPTIVE_THRESH_GAUSSIAN_C",
-                ),
+                config.adaptive_method,
             )
             choice_thresh = st.radio(
                 "Threshold type",
-                (
-                    "THRESH_BINARY",
-                    "THRESH_BINARY_INV",
-                ),
+                config.threshold_type,
             )
             block = st.slider("Block size", 1, 99, 61, 2)
             constant = st.slider("Constant", 1, 100, 11)
@@ -111,22 +97,7 @@ def main():
             st.subheader("PyTesseract settings")
             psm = st.radio(
                 "Page segmentation modes",
-                (
-                    "0 - Orientation and script detection (OSD) only",
-                    "1 - Automatic page segmentation with OSD",
-                    "2 - Automatic page segmentation, but no OSD, or OCR",
-                    "3 - Fully automatic page segmentation, but no OSD (Default)",
-                    "4 - Assume a single column of text of variable sizes",
-                    "5 - Assume a single uniform block of vertically aligned text",
-                    "6 - Assume a single uniform block of text",
-                    "7 - Treat the image as a single text line",
-                    "8 - Treat the image as a single word",
-                    "9 - Treat the image as a single word in a circle",
-                    "10 - Treat the image as a single character",
-                    "11 - Sparse text. Find as much text as possible in no particular order",
-                    "12 - Sparse text with OSD",
-                    "13 - Raw line. Treat the image as a single text line",
-                ),
+                config.page_segmentation_modes,
                 index=3,
             )
             lang = st.radio("Language", ("English", "French"))
