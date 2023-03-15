@@ -12,3 +12,12 @@ The steps to obtain text are as followed:
     You have a button on top of each column to save text and images as file. By default, it is saved in the "result" directory of the project.
     
 ![Animation](https://user-images.githubusercontent.com/66461774/165033937-b0ba5251-01e0-4a82-90bd-6898889aae4c.gif)
+
+How to use it:
+
+* clone this repo
+* create a venv and activate it
+* execute this command indide the folder of the pyproject file:
+pip install .
+* with the venv activated, run
+* python pytesseract_streamlit

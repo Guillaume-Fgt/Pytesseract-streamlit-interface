@@ -1,0 +1,18 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "pytesseract_streamlit"
+authors = [{name = "Guillaume Faguet", email = "guillaume.faguet@protonmail.com"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+
+dependencies = [
+    "streamlit==1.20.0",
+    "opencv-python==4.7.0.72",
+    "pytesseract==0.3.10",
+    ]
+

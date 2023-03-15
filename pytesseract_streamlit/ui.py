@@ -1,9 +1,45 @@
+from typing import Protocol
 import streamlit as st
-from main import Image_Processing
-import config
+from pytesseract_streamlit import config
+from cv2 import Mat
 
 
-def main():
+class Processing(Protocol):
+    def threshold_img(self, lower: int, upper: int):
+        ...
+
+    def mask_img(self, image, struct_elem, choice_morph):
+        ...
+
+    def adaptive_thresh(
+        self, image: Mat, adaptiveMethod, thresholdType, blocksize: int, constant: int
+    ):
+        ...
+
+    def dilate(self, image: Mat, iterations: int, gauss_blur: int, size: int):
+        ...
+
+    def find_contours(
+        self,
+        image: Mat,
+        width_min: int,
+        height_min: int,
+        width_max: int,
+        height_max: int,
+    ):
+        ...
+
+    def contour_to_text(self, rois, psm: str, language: str):
+        ...
+
+    def save_text_to_file(self, text: str) -> None:
+        ...
+
+    def save_image_to_file(self, rois: Mat) -> None:
+        ...
+
+
+def ui(Processing) -> None:
     """define the steamlit UI"""
     # st.set_page_config(layout="wide")
     st.header("PyTesseract Image Processing")
@@ -13,7 +49,7 @@ def main():
     if uploaded_file:
         st.sidebar.subheader("Original image")
         st.sidebar.image(uploaded_file)
-        image = Image_Processing(uploaded_file)
+        image = Processing(uploaded_file)
 
         col1, col2 = st.columns(2)
         with col2:

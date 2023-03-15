@@ -11,8 +11,9 @@ import re
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
-class Image_Processing:
-    """methods to prepare an image using Opencv and extract its text using PyTesseract"""
+class ImageProcessing:
+    """methods to prepare an image using Opencv and extract its text using PyTesseract
+    """
 
     def __init__(self, uploaded_file: BytesIO) -> None:
         self.img = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), 1)
@@ -46,7 +47,9 @@ class Image_Processing:
         return adaptiv_threshold
 
     def dilate(self, image: Mat, iterations: int, gauss_blur: int, size: int):
-        """take an image and transform it in B&W areas that will be used to delimitate rectangles (Region of Interest)"""
+        """take an image and transform it in B&W areas that will be
+        used to delimitate rectangles (Region of Interest)
+        """
         blur = cv2.GaussianBlur(image, (gauss_blur, gauss_blur), 0)
         threshed = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[
             1
@@ -63,7 +66,9 @@ class Image_Processing:
         width_max: int,
         height_max: int,
     ):
-        """identify areas of an image and draw its borders. Return the coordinates of each shape"""
+        """identify areas of an image and draw its borders.
+        Return the coordinates of each shape
+        """
         cnts, hierarchy = cv2.findContours(
             image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
         )
@@ -123,12 +128,3 @@ class Image_Processing:
             x, y, w, h = roi[0]
             roi_img = self.img[y : y + h, x : x + w]
             cv2.imwrite(f"{path}/{x}.jpg", roi_img)
-
-
-# img_rez = cv2.resize(img, None, fx=0.5, fy=0.5)
-
-
-# cv2.imwrite("receipt_1/receipt_6cnts.jpg", img)
-
-# with open("receipt_1/savetext.txt", "w", encoding="utf_8") as f:
-#     f.write(text)
