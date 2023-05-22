@@ -5,15 +5,15 @@ from cv2 import Mat
 import pytesseract
 import numpy as np
 import re
+from config import tesseract_exec_path
 
 
 # path to tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = tesseract_exec_path
 
 
 class ImageProcessing:
-    """methods to prepare an image using Opencv and extract its text using PyTesseract
-    """
+    """methods to prepare an image using Opencv and extract its text using PyTesseract"""
 
     def __init__(self, uploaded_file: BytesIO) -> None:
         self.img = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), 1)

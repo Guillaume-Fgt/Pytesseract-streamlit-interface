@@ -16,6 +16,7 @@ The steps to obtain text are as followed:
 How to use it:
 
 * clone this repo
+* edit pytesseract_streamlit/config.py to change the path to tesseract executable (```tesseract_exec_path```)
 * create a venv and activate it
 * execute this command indide the folder of the pyproject file:
 pip install .

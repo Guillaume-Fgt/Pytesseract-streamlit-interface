@@ -42,3 +42,5 @@ threshold_type = np.array(
         "THRESH_BINARY_INV",
     ]
 )
+
+tesseract_exec_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
