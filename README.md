@@ -2,6 +2,21 @@
 
 Webapp to retrieve text from images using OpenCV and Pytesseract. The interface is made with Streamlit.
 
+
+## How to install it:
+
+* clone this repo
+* edit the pytesseract_streamlit/config.py file with the path to your tesseract executable (```tesseract_exec_path```)
+* create a venv and activate it
+* execute this command inside the folder of the pyproject.toml file:
+```
+pip install .
+```
+* with the venv activated, run in the CLI:
+```
+python pytesseract_streamlit
+```
+## How to use it
 The steps to obtain text are as followed:
   - load an image using button on the side bar
   - Using OpenCV, the image is processed in order to define ROI: Region Of Interest. 
@@ -12,13 +27,3 @@ The steps to obtain text are as followed:
     You have a button on top of each column to save text and images as file. By default, it is saved in the "result" directory of the project.
     
 ![Animation](https://user-images.githubusercontent.com/66461774/165033937-b0ba5251-01e0-4a82-90bd-6898889aae4c.gif)
-
-How to use it:
-
-* clone this repo
-* edit pytesseract_streamlit/config.py to change the path to tesseract executable (```tesseract_exec_path```)
-* create a venv and activate it
-* execute this command indide the folder of the pyproject file:
-pip install .
-* with the venv activated, run
-* python pytesseract_streamlit
