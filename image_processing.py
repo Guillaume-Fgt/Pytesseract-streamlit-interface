@@ -1,12 +1,12 @@
-from io import BytesIO
 import os
-import cv2
-from cv2 import Mat
-import pytesseract
-import numpy as np
 import re
-from config import tesseract_exec_path
+from io import BytesIO
 
+import cv2
+import numpy as np
+import pytesseract
+from config import tesseract_exec_path
+from cv2 import Mat
 
 # path to tesseract executable
 pytesseract.pytesseract.tesseract_cmd = tesseract_exec_path
