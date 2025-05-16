@@ -2,8 +2,8 @@ from streamlit.web import cli as stcli
 from streamlit import runtime
 import sys
 
-from pytesseract_streamlit import image_processing
-from pytesseract_streamlit import ui
+import image_processing
+import ui
 
 
 def main():
@@ -14,5 +14,5 @@ if __name__ == "__main__":
     if runtime.exists():
         main()
     else:
-        sys.argv = ["streamlit", "run", sys.argv[0] + "/__main__.py"]
+        sys.argv = ["streamlit", "run", sys.argv[0]]
         sys.exit(stcli.main())

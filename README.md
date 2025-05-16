@@ -7,15 +7,11 @@ Webapp to retrieve text from images using OpenCV and Pytesseract. The interface 
 
 * clone this repo
 * edit the pytesseract_streamlit/config.py file with the path to your tesseract executable (```tesseract_exec_path```)
-* create a venv and activate it
-* execute this command inside the folder of the pyproject.toml file:
+* this project is using uv. Run the command:
 ```
-pip install .
+uv run main.py
 ```
-* with the venv activated, run in the CLI:
-```
-python pytesseract_streamlit
-```
+
 ## How to use it
 The steps to obtain text are as followed:
   - load an image using button on the side bar
