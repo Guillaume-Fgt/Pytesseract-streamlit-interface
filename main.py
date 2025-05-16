@@ -1,12 +1,12 @@
-from streamlit.web import cli as stcli
-from streamlit import runtime
 import sys
 
 import image_processing
 import ui
+from streamlit import runtime
+from streamlit.web import cli as stcli
 
 
-def main():
+def main() -> None:
     ui.ui(image_processing.ImageProcessing)
 
 
