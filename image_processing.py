@@ -3,6 +3,7 @@ import re
 from io import BytesIO
 
 import cv2
+from cv2.typing import MatLike
 import numpy as np
 import pytesseract
 from config import tesseract_exec_path
@@ -15,7 +16,7 @@ pytesseract.pytesseract.tesseract_cmd = tesseract_exec_path
 class ImageProcessing:
     """methods to prepare an image using Opencv and extract its text using PyTesseract"""
 
-    def __init__(self, uploaded_file: BytesIO) -> None:
+    def load_image(self, uploaded_file: BytesIO) -> None:
         self.img = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), 1)
 
     def threshold_img(self, lower: int = 100, upper: int = 255) -> Mat:
@@ -25,18 +26,17 @@ class ImageProcessing:
         thresh = cv2.inRange(self.img, lower, upper)
         return thresh
 
-    def mask_img(self, image, struct_elem, choice_morph):
+    def mask_img(self, image, struct_elem, choice_morph) -> MatLike:
         """take an image and return a masked version (background deleted)"""
         struct_elem = getattr(cv2, struct_elem)
         choice_morph = getattr(cv2, choice_morph)
         kernel = cv2.getStructuringElement(struct_elem, (20, 20))
         morph = cv2.morphologyEx(image, choice_morph, kernel)
-        masked = cv2.bitwise_and(self.img, self.img, mask=morph)
-        return masked
+        return cv2.bitwise_and(self.img, self.img, mask=morph)
 
     def adaptive_thresh(
         self, image: Mat, adaptiveMethod, thresholdType, blocksize: int, constant: int
-    ):
+    ) -> MatLike:
         """turn an image in B&W and increase its contrast"""
         adaptiveMethod = getattr(cv2, adaptiveMethod)
         thresholdType = getattr(cv2, thresholdType)
@@ -46,7 +46,9 @@ class ImageProcessing:
         )
         return adaptiv_threshold
 
-    def dilate(self, image: Mat, iterations: int, gauss_blur: int, size: int):
+    def dilate(
+        self, image: Mat, iterations: int, gauss_blur: int, size: int
+    ) -> MatLike:
         """take an image and transform it in B&W areas that will be
         used to delimitate rectangles (Region of Interest)
         """
@@ -65,7 +67,7 @@ class ImageProcessing:
         height_min: int,
         width_max: int,
         height_max: int,
-    ):
+    ) -> tuple[Mat, Mat]:
         """identify areas of an image and draw its borders.
         Return the coordinates of each shape
         """
@@ -93,7 +95,7 @@ class ImageProcessing:
                 rect_num += 1
         return rectangle, rois
 
-    def contour_to_text(self, rois, psm: str, language: str):
+    def contour_to_text(self, rois, psm: str, language: str) -> str:
         """use Pytesseract to extract text from an image."""
         psm_re = re.compile(r"\d+ ")
         psm = psm_re.match(psm)

@@ -1,19 +1,26 @@
+from io import BytesIO
 from typing import Protocol
-import streamlit as st
+
+from cv2.typing import MatLike
+
 import config
+import streamlit as st
 from cv2 import Mat
 
 
 class Processing(Protocol):
-    def threshold_img(self, lower: int, upper: int): ...
+    def load_image(self, uploaded_file: BytesIO) -> None: ...
+    def threshold_img(self, lower: int, upper: int) -> MatLike: ...
 
-    def mask_img(self, image, struct_elem, choice_morph): ...
+    def mask_img(self, image, struct_elem, choice_morph) -> MatLike: ...
 
     def adaptive_thresh(
         self, image: Mat, adaptiveMethod, thresholdType, blocksize: int, constant: int
-    ): ...
+    ) -> MatLike: ...
 
-    def dilate(self, image: Mat, iterations: int, gauss_blur: int, size: int): ...
+    def dilate(
+        self, image: Mat, iterations: int, gauss_blur: int, size: int
+    ) -> MatLike: ...
 
     def find_contours(
         self,
@@ -22,16 +29,16 @@ class Processing(Protocol):
         height_min: int,
         width_max: int,
         height_max: int,
-    ): ...
+    ) -> tuple[Mat, Mat]: ...
 
-    def contour_to_text(self, rois, psm: str, language: str): ...
+    def contour_to_text(self, rois, psm: str, language: str) -> str: ...
 
     def save_text_to_file(self, text: str) -> None: ...
 
     def save_image_to_file(self, rois: Mat) -> None: ...
 
 
-def ui(Processing) -> None:
+def ui(processing: Processing) -> None:
     """define the steamlit UI"""
     # st.set_page_config(layout="wide")
     st.header("PyTesseract Image Processing")
@@ -41,7 +48,7 @@ def ui(Processing) -> None:
     if uploaded_file:
         st.sidebar.subheader("Original image")
         st.sidebar.image(uploaded_file)
-        image = Processing(uploaded_file)
+        processing.load_image(uploaded_file)
 
         col1, col2 = st.columns(2)
         with col2:
@@ -50,7 +57,7 @@ def ui(Processing) -> None:
             upper = st.slider("Upper bound", 0, 255, 255)
         with col1:
             st.subheader("Thresh")
-            thresh = image.threshold_img(lower, upper)
+            thresh = processing.threshold_img(lower, upper)
             st.image(thresh)
 
         col3, col4 = st.columns(2)
@@ -68,7 +75,7 @@ def ui(Processing) -> None:
             )
         with col3:
             st.subheader("Masked image")
-            masked = image.mask_img(thresh, choice_struct, choice_morph)
+            masked = processing.mask_img(thresh, choice_struct, choice_morph)
             st.image(masked)
 
         col5, col6 = st.columns(2)
@@ -86,7 +93,7 @@ def ui(Processing) -> None:
             constant = st.slider("Constant", 1, 100, 11)
         with col5:
             st.subheader("Adaptive Threshold")
-            adapt_thresh = image.adaptive_thresh(
+            adapt_thresh = processing.adaptive_thresh(
                 masked, choice_adapt_thresh, choice_thresh, block, constant
             )
             st.image(adapt_thresh)
@@ -99,7 +106,7 @@ def ui(Processing) -> None:
             size = st.slider("Size of the structuring elements", 1, 40, 10)
         with col7:
             st.subheader("Dilated image")
-            dilated = image.dilate(adapt_thresh, ite, gauss_blur, size)
+            dilated = processing.dilate(adapt_thresh, ite, gauss_blur, size)
             st.image(dilated)
 
         col9, col10 = st.columns(2)
@@ -112,7 +119,7 @@ def ui(Processing) -> None:
         with col9:
             st.subheader("Contours detected")
             try:
-                rectangles, rois = image.find_contours(
+                rectangles, rois = processing.find_contours(
                     dilated, width_min, height_min, width_max, height_max
                 )
                 st.image(rectangles)
@@ -129,18 +136,16 @@ def ui(Processing) -> None:
                 index=3,
             )
             lang = st.radio("Language", ("English", "French"))
-        with col11:
-            with st.expander("Show extracted text"):
-                text = image.contour_to_text(rois, psm, lang)
-                if st.button("Save text to file"):
-                    image.save_text_to_file(text)
-                st.text(text)
-        with col12:
-            with st.expander("Show individual ROI"):
-                if st.button("Save individual ROI"):
-                    image.save_image_to_file(rois)
-                for roi in rois:
-                    x, y, w, h = roi[0]
-                    roi_img = masked[y : y + h, x : x + w]
-                    st.write(roi[1])
-                    st.image(roi_img)
+        with col11, st.expander("Show extracted text"):
+            text = processing.contour_to_text(rois, psm, lang)
+            if st.button("Save text to file"):
+                processing.save_text_to_file(text)
+            st.text(text)
+        with col12, st.expander("Show individual ROI"):
+            if st.button("Save individual ROI"):
+                processing.save_image_to_file(rois)
+            for roi in rois:
+                x, y, w, h = roi[0]
+                roi_img = masked[y : y + h, x : x + w]
+                st.write(roi[1])
+                st.image(roi_img)

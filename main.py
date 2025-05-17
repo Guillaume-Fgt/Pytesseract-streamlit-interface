@@ -7,7 +7,7 @@ from streamlit.web import cli as stcli
 
 
 def main() -> None:
-    ui.ui(image_processing.ImageProcessing)
+    ui.ui(image_processing.ImageProcessing())
 
 
 if __name__ == "__main__":
