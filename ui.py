@@ -1,11 +1,10 @@
 from io import BytesIO
 from typing import Protocol
 
-from cv2.typing import MatLike
-
 import config
 import streamlit as st
 from cv2 import Mat
+from cv2.typing import MatLike
 
 
 class Processing(Protocol):
@@ -15,16 +14,21 @@ class Processing(Protocol):
     def mask_img(self, image, struct_elem, choice_morph) -> MatLike: ...
 
     def adaptive_thresh(
-        self, image: Mat, adaptiveMethod, thresholdType, blocksize: int, constant: int
+        self,
+        image: MatLike,
+        adaptiveMethod,
+        thresholdType,
+        blocksize: int,
+        constant: int,
     ) -> MatLike: ...
 
     def dilate(
-        self, image: Mat, iterations: int, gauss_blur: int, size: int
+        self, image: MatLike, iterations: int, gauss_blur: int, size: int
     ) -> MatLike: ...
 
     def find_contours(
         self,
-        image: Mat,
+        image: MatLike,
         width_min: int,
         height_min: int,
         width_max: int,

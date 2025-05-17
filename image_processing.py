@@ -3,11 +3,11 @@ import re
 from io import BytesIO
 
 import cv2
-from cv2.typing import MatLike
 import numpy as np
 import pytesseract
 from config import tesseract_exec_path
 from cv2 import Mat
+from cv2.typing import MatLike
 
 # path to tesseract executable
 pytesseract.pytesseract.tesseract_cmd = tesseract_exec_path
@@ -23,8 +23,7 @@ class ImageProcessing:
         """change the colors of an image between two values."""
         lower = np.array([lower, lower, lower])
         upper = np.array([upper, upper, upper])
-        thresh = cv2.inRange(self.img, lower, upper)
-        return thresh
+        return cv2.inRange(self.img, lower, upper)
 
     def mask_img(self, image, struct_elem, choice_morph) -> MatLike:
         """take an image and return a masked version (background deleted)"""
@@ -35,19 +34,23 @@ class ImageProcessing:
         return cv2.bitwise_and(self.img, self.img, mask=morph)
 
     def adaptive_thresh(
-        self, image: Mat, adaptiveMethod, thresholdType, blocksize: int, constant: int
+        self,
+        image: MatLike,
+        adaptiveMethod,
+        thresholdType,
+        blocksize: int,
+        constant: int,
     ) -> MatLike:
         """turn an image in B&W and increase its contrast"""
-        adaptiveMethod = getattr(cv2, adaptiveMethod)
-        thresholdType = getattr(cv2, thresholdType)
+        adaptivemethod = getattr(cv2, adaptiveMethod)
+        thresholdtype = getattr(cv2, thresholdType)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        adaptiv_threshold = cv2.adaptiveThreshold(
-            gray, 255, adaptiveMethod, thresholdType, blocksize, constant
+        return cv2.adaptiveThreshold(
+            gray, 255, adaptivemethod, thresholdtype, blocksize, constant
         )
-        return adaptiv_threshold
 
     def dilate(
-        self, image: Mat, iterations: int, gauss_blur: int, size: int
+        self, image: MatLike, iterations: int, gauss_blur: int, size: int
     ) -> MatLike:
         """take an image and transform it in B&W areas that will be
         used to delimitate rectangles (Region of Interest)
@@ -57,12 +60,11 @@ class ImageProcessing:
             1
         ]
         kernal = cv2.getStructuringElement(cv2.MORPH_RECT, (size, size))
-        dilate = cv2.dilate(threshed, kernal, iterations=iterations)
-        return dilate
+        return cv2.dilate(threshed, kernal, iterations=iterations)
 
     def find_contours(
         self,
-        image: Mat,
+        image: MatLike,
         width_min: int,
         height_min: int,
         width_max: int,
@@ -98,12 +100,9 @@ class ImageProcessing:
     def contour_to_text(self, rois, psm: str, language: str) -> str:
         """use Pytesseract to extract text from an image."""
         psm_re = re.compile(r"\d+ ")
-        psm = psm_re.match(psm)
-        config_psm = "--psm " + psm[0]
-        if language == "English":
-            lang = "eng"
-        else:
-            lang = "fra"
+        psm_num = num if (num := psm_re.match(psm)) else ""
+        config_psm = "--psm " + psm_num[0]
+        lang = "eng" if language == "English" else "fra"
         text = ""
         for roi in rois:
             x, y, w, h = roi[0]
