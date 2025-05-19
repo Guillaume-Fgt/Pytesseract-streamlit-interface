@@ -36,17 +36,17 @@ class ImageProcessing:
     def adaptive_thresh(
         self,
         image: MatLike,
-        adaptiveMethod,
-        thresholdType,
+        adaptivemethod: str,
+        thresholdtype: str,
         blocksize: int,
         constant: int,
     ) -> MatLike:
         """turn an image in B&W and increase its contrast"""
-        adaptivemethod = getattr(cv2, adaptiveMethod)
-        thresholdtype = getattr(cv2, thresholdType)
+        adaptivemethod_int = getattr(cv2, adaptivemethod)
+        thresholdtype_int = getattr(cv2, thresholdtype)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         return cv2.adaptiveThreshold(
-            gray, 255, adaptivemethod, thresholdtype, blocksize, constant
+            gray, 255, adaptivemethod_int, thresholdtype_int, blocksize, constant
         )
 
     def dilate(
