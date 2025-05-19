@@ -25,12 +25,12 @@ class ImageProcessing:
         upper_b = np.array([upper, upper, upper])
         return cv2.inRange(self.img, lower_b, upper_b)
 
-    def mask_img(self, image, struct_elem, choice_morph) -> MatLike:
+    def mask_img(self, image: MatLike, struct_elem: str, choice_morph: str) -> MatLike:
         """take an image and return a masked version (background deleted)"""
-        struct_elem = getattr(cv2, struct_elem)
-        choice_morph = getattr(cv2, choice_morph)
-        kernel = cv2.getStructuringElement(struct_elem, (20, 20))
-        morph = cv2.morphologyEx(image, choice_morph, kernel)
+        struct_elem_int = getattr(cv2, struct_elem)
+        choice_morph_int = getattr(cv2, choice_morph)
+        kernel = cv2.getStructuringElement(struct_elem_int, (20, 20))
+        morph = cv2.morphologyEx(image, choice_morph_int, kernel)
         return cv2.bitwise_and(self.img, self.img, mask=morph)
 
     def adaptive_thresh(
