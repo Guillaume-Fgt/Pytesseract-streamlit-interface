@@ -35,9 +35,11 @@ class Processing(Protocol):
         height_min: int,
         width_max: int,
         height_max: int,
-    ) -> tuple[Mat, Mat]: ...
+    ) -> tuple[Mat, list[list[int]]]: ...
 
-    def contour_to_text(self, rois, psm: str, language: str) -> str: ...
+    def contour_to_text(
+        self, rois: list[list[int]], psm: str, language: str
+    ) -> str: ...
 
     def save_text_to_file(self, text: str) -> None: ...
 
@@ -150,8 +152,8 @@ def ui(processing: Processing) -> None:
         with col12, st.expander("Show individual ROI"):
             if st.button("Save individual ROI"):
                 processing.save_image_to_file(rois)
-            for roi in rois:
-                x, y, w, h = roi[0]
+            for roi in enumerate(rois, start=1):
+                rect_num, (x, y, w, h) = roi
                 roi_img = masked[y : y + h, x : x + w]
-                st.write(roi[1])
+                st.write(rect_num)
                 st.image(roi_img)

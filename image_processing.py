@@ -69,48 +69,35 @@ class ImageProcessing:
         height_min: int,
         width_max: int,
         height_max: int,
-    ) -> tuple[Mat, Mat]:
+    ) -> tuple[Mat, list[list[int]]]:
         """identify areas of an image and draw its borders.
         Return the coordinates of each shape
         """
-        cnts, hierarchy = cv2.findContours(
-            image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE
-        )
+        cnts, _ = cv2.findContours(image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         rois = []
-        rect_num = 1
         for c in cnts:
             x, y, w, h = cv2.boundingRect(c)
             if width_min < w < width_max and height_min < h < height_max:
                 rectangle = cv2.rectangle(
                     self.img, (x, y), (x + w, y + h), color=(36, 255, 12), thickness=4
                 )
-                rois.append([[x, y, w, h], rect_num])
-                num = cv2.putText(
-                    self.img,
-                    str(rect_num),
-                    org=(x + 10, y + h - 10),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX,
-                    fontScale=2,
-                    color=(36, 255, 12),
-                    thickness=4,
-                )
-                rect_num += 1
+                rois.append([x, y, w, h])
         return rectangle, rois
 
-    def contour_to_text(self, rois, psm: str, language: str) -> str:
+    def contour_to_text(self, rois: list[list[int]], psm: str, language: str) -> str:
         """use Pytesseract to extract text from an image."""
         psm_re = re.compile(r"\d+ ")
         psm_num = num if (num := psm_re.match(psm)) else ""
         config_psm = "--psm " + psm_num[0]
         lang = "eng" if language == "English" else "fra"
         text = ""
-        for roi in rois:
-            x, y, w, h = roi[0]
+        for roi in enumerate(rois, start=1):
+            rect_num, (x, y, w, h) = roi
             roi_search = self.img[y : y + h, x : x + w]
             text_py = pytesseract.image_to_string(
                 roi_search, lang=lang, config=config_psm
             )
-            text += f"***ROI n°{roi[1]}***\n"
+            text += f"***ROI n°{rect_num}***\n"
             text += text_py + "\n"
         return text
 
