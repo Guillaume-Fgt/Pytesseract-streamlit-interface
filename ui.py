@@ -11,13 +11,15 @@ class Processing(Protocol):
     def load_image(self, uploaded_file: BytesIO) -> None: ...
     def threshold_img(self, lower: int, upper: int) -> MatLike: ...
 
-    def mask_img(self, image, struct_elem, choice_morph) -> MatLike: ...
+    def mask_img(
+        self, image: MatLike, struct_elem: str, choice_morph: str
+    ) -> MatLike: ...
 
     def adaptive_thresh(
         self,
         image: MatLike,
-        adaptiveMethod,
-        thresholdType,
+        adaptivemethod: str,
+        thresholdtype: str,
         blocksize: int,
         constant: int,
     ) -> MatLike: ...
