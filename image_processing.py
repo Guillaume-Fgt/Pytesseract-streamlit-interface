@@ -19,11 +19,11 @@ class ImageProcessing:
     def load_image(self, uploaded_file: BytesIO) -> None:
         self.img = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), 1)
 
-    def threshold_img(self, lower: int = 100, upper: int = 255) -> Mat:
+    def threshold_img(self, lower: int = 100, upper: int = 255) -> MatLike:
         """change the colors of an image between two values."""
-        lower = np.array([lower, lower, lower])
-        upper = np.array([upper, upper, upper])
-        return cv2.inRange(self.img, lower, upper)
+        lower_b = np.array([lower, lower, lower])
+        upper_b = np.array([upper, upper, upper])
+        return cv2.inRange(self.img, lower_b, upper_b)
 
     def mask_img(self, image, struct_elem, choice_morph) -> MatLike:
         """take an image and return a masked version (background deleted)"""
