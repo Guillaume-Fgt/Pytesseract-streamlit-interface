@@ -126,14 +126,10 @@ def ui(processing: Processing) -> None:
             height_max = st.slider("Maximum height", 0, 3000, 3000)
         with col9:
             st.subheader("Contours detected")
-            try:
-                rectangles, rois = processing.find_contours(
-                    dilated, width_min, height_min, width_max, height_max
-                )
-                st.image(rectangles)
-            except UnboundLocalError:
-                st.write("No contour detected")
-                text = ""
+            rectangles, rois = processing.find_contours(
+                dilated, width_min, height_min, width_max, height_max
+            )
+            st.image(rectangles)
 
         col11, col12, col13 = st.columns(3)
         with col13:

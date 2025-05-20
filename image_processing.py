@@ -75,14 +75,15 @@ class ImageProcessing:
         """
         cnts, _ = cv2.findContours(image, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         rois = []
+        rect = self.img
         for c in cnts:
             x, y, w, h = cv2.boundingRect(c)
             if width_min < w < width_max and height_min < h < height_max:
-                rectangle = cv2.rectangle(
-                    self.img, (x, y), (x + w, y + h), color=(36, 255, 12), thickness=4
+                cv2.rectangle(
+                    rect, (x, y), (x + w, y + h), color=(36, 255, 12), thickness=4
                 )
                 rois.append([x, y, w, h])
-        return rectangle, rois
+        return rect, rois
 
     def contour_to_text(self, rois: list[list[int]], psm: str, language: str) -> str:
         """use Pytesseract to extract text from an image."""
