@@ -1,6 +1,6 @@
-import os
 import re
 from io import BytesIO
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -69,7 +69,7 @@ class ImageProcessing:
         height_min: int,
         width_max: int,
         height_max: int,
-    ) -> tuple[Mat, list[list[int]]]:
+    ) -> tuple[MatLike, list[list[int]]]:
         """identify areas of an image and draw its borders.
         Return the coordinates of each shape
         """
@@ -102,17 +102,16 @@ class ImageProcessing:
         return text
 
     def save_text_to_file(self, text: str) -> None:
-        path = os.getcwd() + "/result"
-        if not os.path.exists(path):
-            os.makedirs(path)
-        with open(f"{path}/savetext.txt", "w", encoding="utf_8") as f:
-            f.write(text)
+        path = Path.cwd() / "result"
+        if not path.exists():
+            path.mkdir()
+        path.joinpath("saved_text.txt").write_text(text)
 
     def save_image_to_file(self, rois: Mat) -> None:
-        path = os.getcwd() + "/result"
-        if not os.path.exists(path):
-            os.makedirs(path)
-        for roi in rois:
-            x, y, w, h = roi[0]
+        path = Path.cwd() / "result/ROIs"
+        if not path.exists():
+            path.mkdir()
+        for roi in enumerate(rois, start=1):
+            rect_num, (x, y, w, h) = roi
             roi_img = self.img[y : y + h, x : x + w]
-            cv2.imwrite(f"{path}/{x}.jpg", roi_img)
+            cv2.imwrite(f"{path}/{rect_num}.jpg", roi_img)

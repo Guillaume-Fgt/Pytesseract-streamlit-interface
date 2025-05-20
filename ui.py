@@ -35,7 +35,7 @@ class Processing(Protocol):
         height_min: int,
         width_max: int,
         height_max: int,
-    ) -> tuple[Mat, list[list[int]]]: ...
+    ) -> tuple[MatLike, list[list[int]]]: ...
 
     def contour_to_text(
         self, rois: list[list[int]], psm: str, language: str
