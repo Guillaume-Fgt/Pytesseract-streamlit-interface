@@ -3,7 +3,6 @@ from typing import Protocol
 
 import config
 import streamlit as st
-from cv2 import Mat
 from cv2.typing import MatLike
 
 
@@ -43,7 +42,7 @@ class Processing(Protocol):
 
     def save_text_to_file(self, text: str) -> None: ...
 
-    def save_image_to_file(self, rois: Mat) -> None: ...
+    def save_image_to_file(self, rois: list[list[int]]) -> None: ...
 
 
 def ui(processing: Processing) -> None:

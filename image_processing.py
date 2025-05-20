@@ -6,7 +6,6 @@ import cv2
 import numpy as np
 import pytesseract
 from config import tesseract_exec_path
-from cv2 import Mat
 from cv2.typing import MatLike
 
 # path to tesseract executable
@@ -108,7 +107,7 @@ class ImageProcessing:
             path.mkdir()
         path.joinpath("saved_text.txt").write_text(text)
 
-    def save_image_to_file(self, rois: Mat) -> None:
+    def save_image_to_file(self, rois: list[list[int]]) -> None:
         path = Path.cwd() / "result/ROIs"
         if not path.exists():
             path.mkdir()
